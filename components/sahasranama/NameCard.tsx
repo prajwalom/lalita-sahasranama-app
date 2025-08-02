@@ -4,7 +4,6 @@ import { router } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { FavoriteButton } from './FavoriteButton';
-import { Colors } from '@/constants/Colors';
 import { SahasranamaName } from '@/data/lalitaSahasranama';
 
 interface NameCardProps {
