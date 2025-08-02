@@ -18,25 +18,60 @@ const validateEmail = (email: string) => {
   return emailRegex.test(email);
 };
 
-export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+interface FormData {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface FormErrors {
+  fullName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+}
+
+export default function SignupScreen() {
+  const [formData, setFormData] = useState<FormData>({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{email?: string; password?: string}>({});
+  const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleLogin = async () => {
-    const newErrors: {email?: string; password?: string} = {};
+  const handleInputChange = (field: keyof FormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: undefined }));
+    }
+  };
 
-    if (!email) {
+  const handleSignup = async () => {
+    const newErrors: FormErrors = {};
+
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
+    }
+
+    if (!formData.email) {
       newErrors.email = 'Email is required';
-    } else if (!validateEmail(email)) {
+    } else if (!validateEmail(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
 
-    if (!password) {
+    if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (password.length < 6) {
+    } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
+    }
+
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password';
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     setErrors(newErrors);
@@ -46,10 +81,11 @@ export default function LoginScreen() {
       try {
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 2000));
-        Alert.alert('Success', 'Login successful!');
-        router.replace('/(tabs)');
+        Alert.alert('Success', 'Account created successfully!', [
+          { text: 'OK', onPress: () => router.replace('/(auth)/login') },
+        ]);
       } catch (error) {
-        Alert.alert('Error', 'Login failed. Please try again.');
+        Alert.alert('Error', 'Signup failed. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -65,18 +101,26 @@ export default function LoginScreen() {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.content}>
             <View style={styles.header}>
-              <ThemedText style={styles.title}>Welcome Back</ThemedText>
+              <ThemedText style={styles.title}>Create Account</ThemedText>
               <ThemedText style={styles.subtitle}>
-                Sign in to Lalita Sashrname
+                Join Lalita Sashrname today
               </ThemedText>
             </View>
 
             <View style={styles.form}>
               <Input
+                label="Full Name"
+                placeholder="Enter your full name"
+                value={formData.fullName}
+                onChangeText={value => handleInputChange('fullName', value)}
+                error={errors.fullName}
+              />
+
+              <Input
                 label="Email"
                 placeholder="Enter your email"
-                value={email}
-                onChangeText={setEmail}
+                value={formData.email}
+                onChangeText={value => handleInputChange('email', value)}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 error={errors.email}
@@ -84,32 +128,35 @@ export default function LoginScreen() {
 
               <Input
                 label="Password"
-                placeholder="Enter your password"
-                value={password}
-                onChangeText={setPassword}
+                placeholder="Create a password"
+                value={formData.password}
+                onChangeText={value => handleInputChange('password', value)}
                 secureTextEntry
                 error={errors.password}
               />
 
-              <Button
-                title="Sign In"
-                onPress={handleLogin}
-                loading={loading}
-                style={styles.loginButton}
+              <Input
+                label="Confirm Password"
+                placeholder="Confirm your password"
+                value={formData.confirmPassword}
+                onChangeText={value => handleInputChange('confirmPassword', value)}
+                secureTextEntry
+                error={errors.confirmPassword}
               />
 
               <Button
-                title="Forgot Password?"
-                variant="text"
-                onPress={() => Alert.alert('Info', 'Forgot password feature coming soon!')}
+                title="Create Account"
+                onPress={handleSignup}
+                loading={loading}
+                style={styles.signupButton}
               />
             </View>
 
             <View style={styles.footer}>
               <ThemedText style={styles.footerText}>
-                Don't have an account?{' '}
-                <Link href="/(auth)/signup" style={styles.link}>
-                  Sign Up
+                Already have an account?{' '}
+                <Link href="/(auth)/login" asChild style={styles.link}>
+                  Sign In
                 </Link>
               </ThemedText>
             </View>
@@ -151,9 +198,8 @@ const styles = StyleSheet.create({
   form: {
     marginBottom: 30,
   },
-  loginButton: {
+  signupButton: {
     marginTop: 8,
-    marginBottom: 16,
   },
   footer: {
     alignItems: 'center',
