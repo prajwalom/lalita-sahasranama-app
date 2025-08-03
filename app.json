@@ -37,6 +37,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1d351f76-2810-45b8-b931-578a5f3db7c7"
+      }
+    },
+    "owner": "prajwalom"
   }
 }
