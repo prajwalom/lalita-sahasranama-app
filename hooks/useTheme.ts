@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Appearance, ColorSchemeName } from 'react-native';
 
 interface Theme {
@@ -19,59 +19,32 @@ interface Theme {
   };
 }
 
-const lightTheme: Theme = {
-  isDark: false,
-  colors: {
-    primary: '#FF6B35',
-    secondary: '#6B46C1',
-    accent: '#F59E0B',
-    background: '#FFFFFF',
-    surface: '#F8FAFC',
-    text: '#1F2937',
-    textSecondary: '#6B7280',
-    border: '#E5E7EB',
-    success: '#10B981',
-    warning: '#F59E0B',
-    error: '#EF4444',
-    gradient: ['#FF6B35', '#6B46C1'],
-  },
-};
-
 const darkTheme: Theme = {
   isDark: true,
   colors: {
     primary: '#FF6B35',
     secondary: '#8B5CF6',
     accent: '#FCD34D',
-    background: '#111827',
-    surface: '#1F2937',
-    text: '#F9FAFB',
-    textSecondary: '#D1D5DB',
-    border: '#374151',
-    success: '#34D399',
-    warning: '#FBBF24',
-    error: '#F87171',
-    gradient: ['#FF6B35', '#8B5CF6'],
+    background: '#000000',
+    surface: '#1A1A1A',
+    text: '#FFFFFF',
+    textSecondary: '#B0B0B0',
+    border: '#333333',
+    success: '#00FF88',
+    warning: '#FFB800',
+    error: '#FF4444',
+    gradient: ['#FF6B35', '#8B5CF6', '#000000'],
   },
 };
 
 export function useTheme() {
-  const [colorScheme, setColorScheme] = useState<ColorSchemeName>(
-    Appearance.getColorScheme()
-  );
+  const [colorScheme] = useState<ColorSchemeName>('dark');
 
-  useEffect(() => {
-    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-      setColorScheme(colorScheme);
-    });
-
-    return () => subscription?.remove();
-  }, []);
-
-  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
+  // Always return dark theme for consistent black background
+  const theme = darkTheme;
 
   const toggleTheme = () => {
-    setColorScheme(colorScheme === 'dark' ? 'light' : 'dark');
+    // Keep dark theme always
   };
 
   return { ...theme, toggleTheme };

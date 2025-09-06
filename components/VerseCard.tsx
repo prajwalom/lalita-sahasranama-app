@@ -71,14 +71,11 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 16,
     borderWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
+    shadowColor: '#8B5CF6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
     shadowRadius: 8,
-    elevation: 4,
+    elevation: 6,
   },
   header: {
     flexDirection: 'row',
@@ -91,11 +88,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   sanskrit: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 8,
-    lineHeight: 32,
+    lineHeight: 28,
   },
   transliteration: {
     fontSize: 16,
@@ -107,7 +104,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.1)',
+    borderTopColor: '#333333',
   },
   meaningLabel: {
     fontSize: 14,

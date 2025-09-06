@@ -21,6 +21,13 @@ export default function AutoScrollTab() {
   const playbackOptions = [0.5, 1, 1.5, 2];
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     if (isPlaying) {
       intervalRef.current = setInterval(() => {
         setCurrentIndex((prevIndex) => {
@@ -179,10 +186,13 @@ export default function AutoScrollTab() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
           getItemLayout={(data, index) => ({
-            length: 400,
-            offset: 400 * index,
+            length: 300,
+            offset: 300 * index,
             index,
           })}
+          initialNumToRender={3}
+          maxToRenderPerBatch={3}
+          windowSize={5}
         />
 
         <View style={[styles.controls, { backgroundColor: colors.surface }]}>
@@ -257,28 +267,22 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 4,
   },
   settingsPanel: {
     marginHorizontal: 16,
     marginBottom: 16,
     padding: 20,
     borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
+    shadowColor: '#8B5CF6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
     shadowRadius: 8,
-    elevation: 4,
+    elevation: 6,
   },
   settingsTitle: {
     fontSize: 18,
@@ -304,6 +308,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     minWidth: 60,
     alignItems: 'center',
+    shadowColor: '#FCD34D',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   speedText: {
     fontSize: 14,
@@ -317,14 +326,11 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 16,
     borderWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
+    shadowColor: '#8B5CF6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
     shadowRadius: 12,
-    elevation: 6,
+    elevation: 8,
   },
   groupHeader: {
     alignItems: 'center',
@@ -343,12 +349,17 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     marginBottom: 20,
+    shadowColor: '#FCD34D',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
   },
   groupSanskrit: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-    lineHeight: 28,
+    lineHeight: 24,
   },
   controls: {
     position: 'absolute',
@@ -360,14 +371,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
     borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.2,
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
     shadowRadius: 8,
-    elevation: 8,
+    elevation: 10,
   },
   controlButton: {
     width: 56,
@@ -376,14 +384,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
+    shadowColor: '#8B5CF6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 4,
   },
   playButton: {
     width: 72,
@@ -392,14 +397,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.2,
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
     shadowRadius: 8,
-    elevation: 6,
+    elevation: 8,
   },
   progressInfo: {
     position: 'absolute',

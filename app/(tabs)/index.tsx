@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/hooks/useTheme';
 import { dailyVerses } from '@/data/sahasranama';
-import ThemeToggle from '@/components/ThemeToggle';
 import LoadingScreen from '@/components/LoadingScreen';
+import { Book, Heart, Play, Star } from 'lucide-react-native';
 
 export default function HomeTab() {
   const { colors } = useTheme();
@@ -13,7 +13,6 @@ export default function HomeTab() {
   const [dailyVerse, setDailyVerse] = useState(dailyVerses[0]);
 
   useEffect(() => {
-    // Select daily verse based on current date
     const today = new Date();
     const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
     const verseIndex = dayOfYear % dailyVerses.length;
@@ -25,28 +24,26 @@ export default function HomeTab() {
   }
 
   return (
-    <LinearGradient
-      colors={colors.gradient}
-      style={styles.container}
-    >
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <LinearGradient
+        colors={['#FF6B35', '#8B5CF6', '#000000']}
+        style={styles.gradientOverlay}
+      />
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <View style={styles.logoContainer}>
-            {/* Logo placeholder - you can add your logo here */}
             <View style={[styles.logoPlaceholder, { borderColor: colors.primary }]}>
               <Text style={[styles.logoText, { color: colors.primary }]}>
                 ॐ
               </Text>
             </View>
           </View>
-          <ThemeToggle />
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} style={styles.content}>
-          {/* Welcome Section */}
           <View style={[styles.welcomeCard, { backgroundColor: colors.surface }]}>
             <Text style={[styles.welcomeText, { color: colors.textSecondary }]}>
-              From Prajwal to Divine Mother
+              Divine Mother's Blessings
             </Text>
             <Text style={[styles.mainTitle, { color: colors.text }]}>
               श्री ललिता सहस्रनाम
@@ -59,15 +56,13 @@ export default function HomeTab() {
             </Text>
           </View>
 
-          {/* Daily Verse Section */}
           <View style={[styles.verseCard, { backgroundColor: colors.surface }]}>
             <View style={styles.verseHeader}>
+              <Star size={24} color={colors.accent} />
               <Text style={[styles.todayLabel, { color: colors.primary }]}>
                 आज का पवित्र नाम
               </Text>
-              <Text style={[styles.todayLabelEn, { color: colors.secondary }]}>
-                Today's Sacred Name
-              </Text>
+              <Star size={24} color={colors.accent} />
             </View>
 
             <View style={styles.verseContent}>
@@ -112,13 +107,38 @@ export default function HomeTab() {
             </View>
           </View>
 
-          {/* About Section */}
+          <View style={[styles.featuresGrid, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.featuresTitle, { color: colors.text }]}>
+              App Features
+            </Text>
+            <View style={styles.featuresRow}>
+              <View style={styles.featureItem}>
+                <Book size={32} color={colors.primary} />
+                <Text style={[styles.featureText, { color: colors.text }]}>
+                  Complete Namavali
+                </Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Heart size={32} color={colors.error} />
+                <Text style={[styles.featureText, { color: colors.text }]}>
+                  Detailed Meanings
+                </Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Play size={32} color={colors.secondary} />
+                <Text style={[styles.featureText, { color: colors.text }]}>
+                  Auto-scroll Mode
+                </Text>
+              </View>
+            </View>
+          </View>
+
           <View style={[styles.infoCard, { backgroundColor: colors.surface }]}>
             <Text style={[styles.infoTitle, { color: colors.text }]}>
               About Lalita Sahasranama
             </Text>
             <Text style={[styles.infoText, { color: colors.textSecondary }]}>
-              The Lalita Sahasranama contains 1000 sacred names of Goddess Lalita, each carrying profound spiritual significance. Regular recitation brings peace, prosperity, and spiritual growth.
+              The Lalita Sahasranama contains 1000 sacred names of Goddess Lalita. Regular recitation brings peace, prosperity, and spiritual growth.
             </Text>
             
             <View style={styles.benefitsContainer}>
@@ -139,19 +159,9 @@ export default function HomeTab() {
               </Text>
             </View>
           </View>
-
-          {/* Navigation Guide */}
-          <View style={[styles.guideCard, { backgroundColor: colors.accent }]}>
-            <Text style={[styles.guideTitle, { color: colors.background }]}>
-              How to Use This App
-            </Text>
-            <Text style={[styles.guideText, { color: colors.background }]}>
-              Navigate through the tabs below to explore the complete Namavali, detailed meanings, and auto-scroll feature for guided recitation.
-            </Text>
-          </View>
         </ScrollView>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -159,16 +169,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  gradientOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0.1,
+  },
   safeArea: {
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 8,
+    paddingVertical: 20,
   },
   logoContainer: {
     alignItems: 'center',
@@ -180,6 +194,11 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 10,
   },
   logoText: {
     fontSize: 24,
@@ -194,14 +213,11 @@ const styles = StyleSheet.create({
     padding: 24,
     marginBottom: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
     shadowRadius: 12,
-    elevation: 6,
+    elevation: 8,
   },
   welcomeText: {
     fontSize: 16,
@@ -209,7 +225,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   mainTitle: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 8,
@@ -229,29 +245,23 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 24,
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
+    shadowColor: '#8B5CF6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
     shadowRadius: 12,
-    elevation: 6,
+    elevation: 8,
   },
   verseHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 24,
   },
   todayLabel: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-  },
-  todayLabelEn: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 4,
-    fontStyle: 'italic',
+    marginHorizontal: 12,
   },
   verseContent: {
     alignItems: 'center',
@@ -261,15 +271,20 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 12,
     marginBottom: 16,
+    shadowColor: '#FCD34D',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
   sanskrit: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    lineHeight: 36,
+    lineHeight: 32,
   },
   transliteration: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
     fontStyle: 'italic',
     marginBottom: 24,
@@ -286,13 +301,18 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   meaning: {
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 15,
+    lineHeight: 22,
   },
   significanceContainer: {
     padding: 16,
     borderRadius: 12,
     marginTop: 8,
+    shadowColor: '#FCD34D',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
   },
   significanceLabel: {
     fontSize: 16,
@@ -300,22 +320,49 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   significance: {
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 14,
+    lineHeight: 20,
     fontStyle: 'italic',
+  },
+  featuresGrid: {
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  featuresTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  featuresRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  featureItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  featureText: {
+    fontSize: 12,
+    marginTop: 8,
+    textAlign: 'center',
+    fontWeight: '600',
   },
   infoCard: {
     borderRadius: 16,
     padding: 20,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
+    marginBottom: 32,
+    shadowColor: '#8B5CF6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
     shadowRadius: 8,
-    elevation: 4,
+    elevation: 6,
   },
   infoTitle: {
     fontSize: 20,
@@ -324,8 +371,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   infoText: {
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 15,
+    lineHeight: 22,
     marginBottom: 16,
   },
   benefitsContainer: {
@@ -340,22 +387,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     marginBottom: 4,
-  },
-  guideCard: {
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 32,
-    alignItems: 'center',
-  },
-  guideTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  guideText: {
-    fontSize: 15,
-    textAlign: 'center',
-    lineHeight: 22,
   },
 });

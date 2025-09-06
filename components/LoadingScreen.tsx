@@ -2,21 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '@/hooks/useTheme';
-import { inspirationalQuotes } from '@/data/sahasranama';
 
 interface LoadingScreenProps {
   onComplete?: () => void;
   duration?: number;
 }
 
-export default function LoadingScreen({ onComplete, duration = 4000 }: LoadingScreenProps) {
+export default function LoadingScreen({ onComplete, duration = 2000 }: LoadingScreenProps) {
   const { colors } = useTheme();
-  const [currentQuote, setCurrentQuote] = useState(0);
   const [progress, setProgress] = useState(0);
   const fadeAnim = new Animated.Value(0);
   const scaleAnim = new Animated.Value(0.8);
   const rotateAnim = new Animated.Value(0);
-  const pulseAnim = new Animated.Value(1);
   const progressAnim = new Animated.Value(0);
 
   useEffect(() => {
@@ -24,7 +21,7 @@ export default function LoadingScreen({ onComplete, duration = 4000 }: LoadingSc
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 1,
-          duration: 1000,
+          duration: 800,
           useNativeDriver: true,
         }),
         Animated.spring(scaleAnim, {
@@ -41,41 +38,20 @@ export default function LoadingScreen({ onComplete, duration = 4000 }: LoadingSc
       ]).start();
     };
 
-    // Continuous rotation animation
     const rotateAnimation = Animated.loop(
       Animated.timing(rotateAnim, {
         toValue: 1,
-        duration: 8000,
+        duration: 3000,
         useNativeDriver: true,
       })
     );
 
-    // Pulse animation
-    const pulseAnimation = Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1.2,
-          duration: 1500,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 1500,
-          useNativeDriver: true,
-        }),
-      ])
-    );
-
-    const quoteInterval = setInterval(() => {
-      setCurrentQuote((prev) => (prev + 1) % inspirationalQuotes.length);
-    }, 2500);
-
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
-        const newProgress = prev + (100 / (duration / 100));
+        const newProgress = prev + (100 / (duration / 50));
         return newProgress > 100 ? 100 : newProgress;
       });
-    }, 100);
+    }, 50);
 
     const timer = setTimeout(() => {
       onComplete?.();
@@ -83,14 +59,11 @@ export default function LoadingScreen({ onComplete, duration = 4000 }: LoadingSc
 
     animateIn();
     rotateAnimation.start();
-    pulseAnimation.start();
 
     return () => {
-      clearInterval(quoteInterval);
       clearInterval(progressInterval);
       clearTimeout(timer);
       rotateAnimation.stop();
-      pulseAnimation.stop();
     };
   }, [duration, onComplete]);
 
@@ -102,7 +75,7 @@ export default function LoadingScreen({ onComplete, duration = 4000 }: LoadingSc
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <LinearGradient
-        colors={[colors.primary + '20', colors.secondary + '20', colors.accent + '20']}
+        colors={['#FF6B35', '#8B5CF6', '#000000']}
         style={styles.gradientOverlay}
       />
       
@@ -121,22 +94,16 @@ export default function LoadingScreen({ onComplete, duration = 4000 }: LoadingSc
               styles.outerCircle,
               {
                 borderColor: colors.primary,
-                transform: [{ rotate: spin }, { scale: pulseAnim }],
+                transform: [{ rotate: spin }],
               },
             ]}
           >
-            <View style={[styles.innerCircle, { backgroundColor: colors.primary + '30' }]}>
+            <View style={[styles.innerCircle, { backgroundColor: colors.primary + '20' }]}>
               <Text style={[styles.omText, { color: colors.primary }]}>
                 ॐ
               </Text>
             </View>
           </Animated.View>
-          
-          <View style={styles.decorativeElements}>
-            <View style={[styles.dot, { backgroundColor: colors.secondary }]} />
-            <View style={[styles.dot, { backgroundColor: colors.accent }]} />
-            <View style={[styles.dot, { backgroundColor: colors.primary }]} />
-          </View>
         </View>
 
         <View style={styles.titleContainer}>
@@ -147,17 +114,6 @@ export default function LoadingScreen({ onComplete, duration = 4000 }: LoadingSc
             Śrī Lalitā Sahasranāma
           </Text>
           <View style={[styles.divider, { backgroundColor: colors.primary }]} />
-        </View>
-        
-        <View style={[styles.quoteContainer, { backgroundColor: colors.surface }]}>
-          <View style={[styles.quoteIcon, { backgroundColor: colors.primary }]}>
-            <Text style={[styles.quoteSymbol, { color: colors.background }]}>
-              "
-            </Text>
-          </View>
-          <Text style={[styles.quote, { color: colors.text }]}>
-            {inspirationalQuotes[currentQuote]}
-          </Text>
         </View>
 
         <View style={styles.progressContainer}>
@@ -176,7 +132,7 @@ export default function LoadingScreen({ onComplete, duration = 4000 }: LoadingSc
             />
           </View>
           <Text style={[styles.progressText, { color: colors.textSecondary }]}>
-            {Math.round(progress)}% Complete
+            Loading... {Math.round(progress)}%
           </Text>
         </View>
 
@@ -205,6 +161,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    opacity: 0.3,
   },
   content: {
     alignItems: 'center',
@@ -214,98 +171,46 @@ const styles = StyleSheet.create({
   logoContainer: {
     marginBottom: 40,
     alignItems: 'center',
-    position: 'relative',
   },
   outerCircle: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 3,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 2,
     justifyContent: 'center',
     alignItems: 'center',
-    borderStyle: 'dashed',
   },
   innerCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     justifyContent: 'center',
     alignItems: 'center',
   },
   omText: {
-    fontSize: 40,
+    fontSize: 36,
     fontWeight: 'bold',
-  },
-  decorativeElements: {
-    position: 'absolute',
-    top: -10,
-    right: -10,
-    flexDirection: 'row',
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginHorizontal: 2,
   },
   titleContainer: {
     alignItems: 'center',
     marginBottom: 32,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
     fontStyle: 'italic',
     marginBottom: 16,
   },
   divider: {
     width: 60,
-    height: 3,
-    borderRadius: 2,
-  },
-  quoteContainer: {
-    marginBottom: 32,
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-    borderRadius: 16,
-    minHeight: 100,
-    justifyContent: 'center',
-    width: '100%',
-    position: 'relative',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  quoteIcon: {
-    position: 'absolute',
-    top: -10,
-    left: 20,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  quoteSymbol: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  quote: {
-    fontSize: 15,
-    textAlign: 'center',
-    lineHeight: 22,
-    fontStyle: 'italic',
+    height: 2,
+    borderRadius: 1,
   },
   progressContainer: {
     width: '100%',
@@ -314,14 +219,14 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     width: '80%',
-    height: 8,
-    borderRadius: 4,
+    height: 6,
+    borderRadius: 3,
     overflow: 'hidden',
     marginBottom: 12,
   },
   progressFill: {
     height: '100%',
-    borderRadius: 4,
+    borderRadius: 3,
   },
   progressText: {
     fontSize: 14,
